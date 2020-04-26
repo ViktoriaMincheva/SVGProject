@@ -23,7 +23,7 @@ int main()
 				char* fileName;
 				fileName = strtok(NULL, " ");
 				Command::openFile(file, fileName);
-
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::PRINT) == 0) {
 
@@ -36,6 +36,7 @@ int main()
 				int currLine = 0;
 				int toSkip = 4;
 				int numOfShapes = 0;
+				file.seekg(std::ios_base::beg);
 				file.unsetf(std::ios::skipws);
 
 
@@ -60,7 +61,7 @@ int main()
 					
 
 				}
-				
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::CREATE) == 0) {
 				
@@ -68,11 +69,13 @@ int main()
 				shapeName = strtok(NULL, " ");
 				Command::createNewShape(file, shapeName);
 
-
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::WHITHIN) == 0) {
 
 				std::cout << Command::WHITHIN << std::endl;
+
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::ERASE) == 0) {
 				char* token;
@@ -82,22 +85,21 @@ int main()
 				numOfShape = std::stoi(token);
 				Command::eraseShape(file, numOfShape);
 
-
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::TRANSLATE) == 0) {
 
 				std::cout << Command::TRANSLATE << std::endl;
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::SAVE) == 0) { // da pitam
 				//char* fileName;
 				//fileName = strtok(NULL, " ");
-				Command::save(file);
+				//Command::save(file);
 
-
-				std::cout << Command::SAVE << std::endl;
 			}
 			else if (strcmp(word, "exit") == 0) { //done
-				file.close;
+				file.close();
 				std::cout << "Exit!" << std::endl;
 				return 0;
 			}
@@ -113,10 +115,11 @@ int main()
 				else {
 					std::cout << "Invalid command!" << std::endl;
 				}
-				
+				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::HELP) == 0) { //done
 				Command::help();
+				std::cout << "\n";
 			}
 			else {
 				std::cout << "Command not recognized! Try again!" << std::endl;

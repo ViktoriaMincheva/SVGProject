@@ -22,11 +22,11 @@ Shape* StraightLines::printLine(char* line, int shapeNum)
 
 	int val = 0;
 	int x1, y1, x2, y2;
-	char* color;
+	char* color = new char[1];
 	while (token != NULL) {
 
 		if (toPrint % 2 == 1) {
-			toPrint++;
+			
 			if (val == 0) {
 				x1 = std::stoi(token);
 				val++;
@@ -49,7 +49,7 @@ Shape* StraightLines::printLine(char* line, int shapeNum)
 				val++;
 			}
 		}
-
+		toPrint++;
 		token = strtok(NULL, "\"");
 	}
 
@@ -58,7 +58,7 @@ Shape* StraightLines::printLine(char* line, int shapeNum)
 
 void StraightLines::printToConsole()
 {
-	std::cout << x1 << " " << y1 << " " << x2 << " " << y2;
+	std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << " ";
 	Shape::printToConsole();
 }
 

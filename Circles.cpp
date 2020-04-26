@@ -21,11 +21,11 @@ Shape* Circles::printCircle(char * line, int shapeNum)
 
 	int val = 0;
 	int circleX, circleY, radius;
-	char* circleColor;
+	char* circleColor = new char[1];
 	while (token != NULL) {
 
 		if (toPrint % 2 == 1) {
-			toPrint++;
+			
 			if (val == 0) {
 				circleX = std::stoi(token);
 				val++;
@@ -44,7 +44,7 @@ Shape* Circles::printCircle(char * line, int shapeNum)
 				val++;
 			}
 		}
-
+		toPrint++;
 		token = strtok(NULL, "\"");
 	}
 
@@ -53,7 +53,7 @@ Shape* Circles::printCircle(char * line, int shapeNum)
 
 void Circles::printToConsole()
 { 
-	std::cout << centerX << " " << centerY << " " << radius;
+	std::cout << centerX << " " << centerY << " " << radius << " ";
 	Shape::printToConsole();
 }
 

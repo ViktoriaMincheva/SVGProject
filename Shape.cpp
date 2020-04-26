@@ -29,42 +29,43 @@ void Shape::printShape(char* line, char* shapeName, int numOfShapes)
 		
 		std::cout << shapeNum << ". circle ";
 		Shape* circle = Circles::printCircle(line, shapeNum);
-		*circle->printToConsole;
+		circle->printToConsole();
+		std::cout << "\n";
 	}
 	else if (strcmp(shapeName, "<rect") == 0) {
 
 		std::cout << shapeNum << ". rectangle ";
 		Shape* rect = Rectangles::printRectangle(line, shapeNum);
-		*rect->printToConsole;
-
+		rect->printToConsole();
+		std::cout << "\n";
 	}
 	else if (strcmp(shapeName, "<ellipse") == 0) {
 
 		std::cout << shapeNum << ". ellipse ";
 		Shape* ellipse = Ellipses::printEllipse(line, shapeNum);
-		*ellipse->printToConsole;
-		
+		ellipse->printToConsole();
+		std::cout << "\n";
 	}
 	else if (strcmp(shapeName, "<line") == 0) {
 
 		std::cout << shapeNum << ". line ";
 		Shape* sLine = StraightLines::printLine(line, shapeNum);
-		*sLine->printToConsole;
-
+		sLine->printToConsole();
+		std::cout << "\n";
 	}
 	else if (strcmp(shapeName, "<polyline") == 0) {
 
 		std::cout << shapeNum << ". polyline ";
 		//Shape* polyline = Polylines::printPolyline(line, shapeNum);
-		//*polyline->printToConsole;
-
+		//polyline->printToConsole();
+		std::cout << "\n";
 	}
 	else if (strcmp(shapeName, "<polygon") == 0) {
 
 		std::cout << shapeNum << ". polygon ";
 		//Shape* polygon = Polygons::printPolygon(line, shapeNum);
-		//*polygon->printToConsole;
-
+		//polygon->printToConsole();
+		std::cout << "\n";
 	}
 }
 

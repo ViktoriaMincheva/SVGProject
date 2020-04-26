@@ -21,12 +21,14 @@ Shape* Rectangles::printRectangle(char* line, int shapeNum)
 	token = strtok(line, "\"");
 
 	int val = 0;
-	int x, y, width, height;
-	char* color;
-	while (token != NULL) {
+	int x, y, width, height = 0;
+	char* color = new char[1];
 
+
+	while (token != NULL) {
+		
 		if (toPrint % 2 == 1) {
-			toPrint++;
+			
 			if (val == 0) {
 				x = std::stoi(token);
 				val++;
@@ -48,8 +50,10 @@ Shape* Rectangles::printRectangle(char* line, int shapeNum)
 				strcpy(color, token);
 				val++;
 			}
+
 		}
 
+		toPrint++;
 		token = strtok(NULL, "\"");
 	}
 
@@ -58,7 +62,7 @@ Shape* Rectangles::printRectangle(char* line, int shapeNum)
 
 void Rectangles::printToConsole()
 {
-	std::cout << x << " " << y << " " << width << " " << height;
+	std::cout << x << " " << y << " " << width << " " << height << " ";
 	Shape::printToConsole();
 }
 
