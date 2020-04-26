@@ -16,7 +16,11 @@ int main()
 	while (true) {
 		std::cin.getline(line, MAX_LINE);
 
+		char* lineCop = new char[strlen(line) + 1];
+		strcpy(lineCop, line);
 		char* word = strtok(line, " ");
+		
+		
 
 		if (word != NULL) {
 			if (strcmp(word, Command::OPEN) == 0) { //t.e. първата дума е open
@@ -66,8 +70,10 @@ int main()
 			else if (strcmp(word, Command::CREATE) == 0) {
 				
 				char* shapeName;
+				
 				shapeName = strtok(NULL, " ");
-				Command::createNewShape(file, shapeName);
+
+				Command::createNewShape(file, shapeName, lineCop);
 
 				std::cout << "\n";
 			}

@@ -1,4 +1,11 @@
 #include "Command.h"
+#include "Circles.h"
+#include "Ellipses.h"
+#include "Rectangles.h"
+#include "StraightLines.h"
+#include "Polygons.h"
+#include "Polylines.h"
+
 
 
 const char* Command::OPEN = "open";
@@ -28,7 +35,7 @@ void Command::openFile(std::fstream& file,char * fileName)
 	}
 }
 
-void Command::createNewShape(std::fstream& file, char * shapeName)
+void Command::createNewShape(std::fstream& file, char * shapeName, char * line)
 { 
 	if (!file.is_open()) {
 		std::cerr << "This file is not opened yet!" << std::endl <<
@@ -36,8 +43,9 @@ void Command::createNewShape(std::fstream& file, char * shapeName)
 
 	}
 	else {
-	    
+		Shape* s = new Circles;
 		if (strcmp(shapeName, Shape::CIRCLE) == 0) {
+			s = Circles::createCircle(line);
 
 		}
 		else if (strcmp(shapeName, Shape::ELLIPSE) == 0) {
@@ -63,7 +71,7 @@ void Command::createNewShape(std::fstream& file, char * shapeName)
 		}
 
 
-
+		file.seekg(std::ios_base::beg);
 		file.unsetf(std::ios::skipws);
 	    int length = 0;
 	    char currLine;
@@ -81,11 +89,13 @@ void Command::createNewShape(std::fstream& file, char * shapeName)
 	    file.seekg(std::ios_base::beg);
 
 	    int currLen = 0;
-	    while(file >> currLine && currLen++ < newLen) {
+	    while(file >> currLine && currLen < newLen) {
 	        temp << currLine;
+			currLen++;
 	    }
 
-		temp << "\t" << shapeName << "\n</svg>"; // реално функцията
+		s->printToFile(temp);
+		temp << "\n</svg>"; // реално функцията
 		file.close();
 		temp.close();
 
@@ -93,6 +103,7 @@ void Command::createNewShape(std::fstream& file, char * shapeName)
 		rename("temp.svg", "figures.svg");
 		file.open("figures.svg", std::ios::in | std::ios::out);
 
+		std::cout << "Successfully created " << shapeName << std::endl;
 	}
 
 }

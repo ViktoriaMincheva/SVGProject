@@ -16,6 +16,8 @@ public:
 
 	static Shape* printCircle(char *, int);
 	virtual void printToConsole() override;
+	virtual void printToFile(std::fstream&) override;
+	static Shape * createCircle(char *);
 	int getX();
 	int getY();
 	int getRadius();

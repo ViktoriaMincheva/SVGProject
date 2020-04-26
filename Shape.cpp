@@ -1,3 +1,4 @@
+#include <fstream>
 #include "Shape.h"
 #include "Circles.h"
 #include "Rectangles.h"
@@ -16,6 +17,11 @@ const char* Shape::POLYGON = "polygone";
 void Shape::printToConsole()
 {
 	std::cout << color;
+}
+
+void Shape::printToFile(std::fstream& file)
+{
+	file << color;
 }
 
 void Shape::printShape(char* line, char* shapeName, int numOfShapes)

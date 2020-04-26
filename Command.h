@@ -22,7 +22,7 @@ public:
 
 	static void openFile(std::fstream& file,char* fileName);
 	//static void printInfo(std::fstream& file);
-	static void createNewShape(std::fstream& file, char * shapeName);
+	static void createNewShape(std::fstream& file, char * shapeName, char * line);
 	static void whithin(std::fstream& file);
 	static void eraseShape(std::fstream& file, int numOfShape);
 	static void translate(std::fstream& file);

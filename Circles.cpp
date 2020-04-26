@@ -1,4 +1,6 @@
 #include "Circles.h"
+#include <fstream>
+#include <string.h>
 
 Circles::Circles() : centerX(0), centerY(0), radius(0)
 {
@@ -55,6 +57,53 @@ void Circles::printToConsole()
 { 
 	std::cout << centerX << " " << centerY << " " << radius << " ";
 	Shape::printToConsole();
+}
+
+void Circles::printToFile(std::fstream& file)
+{ //<circle cx="5" cy="5" r="10" fill="blue" />
+	file << "  <circle cx=\"" << centerX << "\" cy=\"" << centerY << "\" r=\"" << radius << "\" fill=\"" << color << "\" />";
+}
+
+Shape * Circles::createCircle(char * line)
+{
+	int val = 0;
+	char* token;
+	
+	token = strtok(line, " ");
+	
+	int circleX, circleY, radius;
+	
+	//char* circleColor = new char[4];
+	//strcpy(circleColor, "red");
+	char* circleColor = new char[1];
+
+	while (token != NULL) {
+
+		if (val < 2) {
+			val++;
+		} 
+		else if (val == 2) {
+			circleX = std::stoi(token);
+			val++;
+		}
+		else if (val == 3) {
+			circleY = std::stoi(token);
+			val++;
+		}
+		else if (val == 4) {
+			radius = std::stoi(token);
+			val++;
+		}
+		else if (val == 5) {
+			circleColor = new char[strlen(token) + 1];
+			strcpy(circleColor, token);
+			val++;
+		}
+	
+		token = strtok(NULL, " ");
+	}
+	
+	return new Circles(circleX, circleY, radius, circleColor);
 }
 
 int Circles::getX()

@@ -23,6 +23,7 @@ public:
 public: 
 
 	virtual void printToConsole();
+	virtual void printToFile(std::fstream& file);
 	static void printShape(char *, char *, int);
 	char* getColor();
 
