@@ -23,10 +23,16 @@ int main()
 		
 
 		if (word != NULL) {
-			if (strcmp(word, Command::OPEN) == 0) { //t.e. първата дума е open
+			if (strcmp(word, Command::OPEN) == 0) { 
 				char* fileName;
 				fileName = strtok(NULL, " ");
 				Command::openFile(file, fileName);
+				std::cout << "\n";
+			}
+			else if (strcmp(word, Command::CLOSE) == 0) {
+				char* fileName;
+				fileName = strtok(NULL, " ");
+				Command::closeFile(file, fileName);
 				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::PRINT) == 0) {
@@ -34,6 +40,7 @@ int main()
 				if (!file.is_open()) {
 					std::cerr << "This file is not opened yet!" << std::endl <<
 						"If you want to use it, please open it first!" << std::endl;
+					std::cout << "\n";
 					continue;
 				}
 				char line[MAX_LINE];
@@ -96,6 +103,7 @@ int main()
 			else if (strcmp(word, Command::TRANSLATE) == 0) {
 
 				std::cout << Command::TRANSLATE << std::endl;
+				Command::translate(file, lineCop);
 				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::SAVE) == 0) { // da pitam
@@ -123,7 +131,7 @@ int main()
 				}
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::HELP) == 0) { //done
+			else if (strcmp(word, Command::HELP) == 0) { 
 				Command::help();
 				std::cout << "\n";
 			}
@@ -136,11 +144,6 @@ int main()
 
 
 	}
-
-
-	
-
-
 
 	return 0;
 }

@@ -1,4 +1,6 @@
 #include "StraightLines.h"
+#include <fstream>
+#include <string.h>
 
 StraightLines::StraightLines() : x1(0), y1(0), x2(0), y2(0)
 {
@@ -21,7 +23,7 @@ Shape* StraightLines::printLine(char* line, int shapeNum)
 	token = strtok(line, "\"");
 
 	int val = 0;
-	int x1, y1, x2, y2;
+	int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 	char* color = new char[1];
 	while (token != NULL) {
 
@@ -60,6 +62,54 @@ void StraightLines::printToConsole()
 {
 	std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << " ";
 	Shape::printToConsole();
+}
+
+void StraightLines::printToFile(std::fstream& file)
+{
+	file << "  <line x1=\"" << x1 << "\" y1=\"" << y1 << "\" x2=\"" << x2 << "\" y2=\"" << y2 << "\" fill=\"";
+	Shape::printToFile(file);
+	file << "\" />";
+}
+
+Shape* StraightLines::createLine(char* line)
+{
+	int val = 0;
+	char* token;
+
+	token = strtok(line, " ");
+	int newX1 = 0, newY1 = 0, newX2 = 0, newY2 = 0;
+	char* lineColor = new char[1];
+	while (token != NULL) {
+
+		if (val < 2) {
+			val++;
+		}
+		else if (val == 2) {
+			newX1 = std::stoi(token);
+			val++;
+		}
+		else if (val == 3) {
+			newY1 = std::stoi(token);
+			val++;
+		}
+		else if (val == 4) {
+			newX2 = std::stoi(token);
+			val++;
+		}
+		else if (val == 5) {
+			newY2 = std::stoi(token);
+			val++;
+		}
+		else if (val == 6) {
+			lineColor = new char[strlen(token) + 1];
+			strcpy(lineColor, token);
+			val++;
+		}
+
+		token = strtok(NULL, " ");
+	}
+
+	return new StraightLines(newX1, newY1, newX2, newY2, lineColor);
 }
 
 int StraightLines::getX1()

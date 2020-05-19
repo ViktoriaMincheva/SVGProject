@@ -3,6 +3,8 @@
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg> 
   <rect x="5" y="5" width="10" height="10" fill="green" />
-  <circle cx="5" cy="5" r="10" fill="blue" />
-  <rect x="100" y="60" width="10" height="10" fill="red" />
+  <circle cx="5" cy="10" r="10" fill="pink" />
+  <line x1="11" y1="13" x2="14" y2="15" fill="orange" />
+  <circle cx="33" cy="33" r="33" fill="black" />
+  <ellipse cx="-10" cy="-10" rx="-10" ry="-10" fill="white" />
 </svg>

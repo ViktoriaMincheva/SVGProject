@@ -17,6 +17,9 @@ public:
 
 	static Shape* printEllipse(char*, int);
 	virtual void printToConsole() override;
+	virtual void printToFile(std::fstream&) override;
+	static Shape* createEllipse(char*);
+
 	int getX();
 	int getY();
 	int getRX();

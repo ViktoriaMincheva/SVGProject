@@ -1,4 +1,6 @@
 #include "Rectangles.h"
+#include <fstream>
+#include <string.h>
 
 Rectangles::Rectangles() : x(0), y(0), width (0), height(0)
 {
@@ -21,7 +23,7 @@ Shape* Rectangles::printRectangle(char* line, int shapeNum)
 	token = strtok(line, "\"");
 
 	int val = 0;
-	int x, y, width, height = 0;
+	int x =0, y = 0, width = 0, height = 0;
 	char* color = new char[1];
 
 
@@ -64,6 +66,55 @@ void Rectangles::printToConsole()
 {
 	std::cout << x << " " << y << " " << width << " " << height << " ";
 	Shape::printToConsole();
+}
+
+void Rectangles::printToFile(std::fstream& file)
+{
+	file << "  <rect x=\"" << x << "\" y=\"" << y << "\" width=\"" << width << "\" height=\"" << height << "\" fill=\"";
+	Shape::printToFile(file);
+	file << "\" />";
+}
+
+Shape* Rectangles::createRectangle(char* line)
+{
+	int val = 0;
+	char* token;
+	 
+	token = strtok(line, " ");
+	int newX = 0, newY = 0, newWidth = 0, newHeight = 0;
+	char* rectColor = new char[1];
+
+	while (token != NULL) {
+
+		if (val < 2) {
+			val++;
+		}
+		else if (val == 2) {
+			newX = std::stoi(token);
+			val++;
+		}
+		else if (val == 3) {
+			newY = std::stoi(token);
+			val++;
+		}
+		else if (val == 4) {
+			newWidth = std::stoi(token);
+			val++;
+		}
+		else if (val == 5) {
+			newHeight = std::stoi(token);
+			val++;
+		}
+		else if (val == 6) {
+			rectColor = new char[strlen(token) + 1];
+			strcpy(rectColor, token);
+			val++;
+		}
+
+		token = strtok(NULL, " ");
+	}
+
+	return new Rectangles(newX, newY, newWidth, newHeight, rectColor);
 }
 
 int Rectangles::getX()

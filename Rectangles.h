@@ -17,6 +17,8 @@ public:
 	
 	static Shape* printRectangle(char*, int);
 	virtual void printToConsole() override;
+	virtual void printToFile(std::fstream&) override;
+	static Shape* createRectangle(char*);
 	int getX();
 	int getY();
 	int getWidth();

@@ -1,4 +1,6 @@
 #include "Ellipses.h"
+#include <fstream>
+#include <string.h>
 
 Ellipses::Ellipses() : centerX(0), centerY(0), rx(0), ry(0)
 {
@@ -21,7 +23,7 @@ Shape* Ellipses::printEllipse(char* line, int shapeNum)
 	token = strtok(line, "\"");
 
 	int val = 0;
-	int centerX, centerY, rx, ry;
+	int centerX = 0, centerY = 0, rx = 0, ry = 0;
 	char* color = new char[1];
 
 	while (token != NULL) {
@@ -62,6 +64,55 @@ void Ellipses::printToConsole()
 {
 	std::cout << centerX << " " << centerY << " " << rx << " " << ry << " ";
 	Shape::printToConsole();
+}
+
+void Ellipses::printToFile(std::fstream& file)
+{
+	file << "  <ellipse cx=\"" << centerX << "\" cy=\"" << centerY << "\" rx=\"" << rx << "\" ry=\"" << ry << "\" fill=\"";
+	Shape::printToFile(file);
+	file << "\" />";
+}
+
+Shape* Ellipses::createEllipse(char* line)
+{
+	int val = 0;
+	char* token;
+
+	token = strtok(line, " ");
+	int cX = 0, cY = 0, rX = 0, rY = 0;
+	char* ellipseColor = new char[1];
+
+	while (token != NULL) {
+
+		if (val < 2) {
+			val++;
+		}
+		else if (val == 2) {
+			cX = std::stoi(token);
+			val++;
+		}
+		else if (val == 3) {
+			cY = std::stoi(token);
+			val++;
+		}
+		else if (val == 4) {
+			rX = std::stoi(token);
+			val++;
+		}
+		else if (val == 5) {
+			rY = std::stoi(token);
+			val++;
+		}
+		else if (val == 6) {
+			ellipseColor = new char[strlen(token) + 1];
+			strcpy(ellipseColor, token);
+			val++;
+		}
+
+		token = strtok(NULL, " ");
+	}
+
+	return new Ellipses(cX, cY, rX, rY, ellipseColor);
 }
 
 int Ellipses::getX()

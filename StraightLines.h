@@ -14,6 +14,8 @@ public:
 
 	static Shape* printLine(char*, int);
 	virtual void printToConsole() override;
+	virtual void printToFile(std::fstream&) override;
+	static Shape* createLine(char*);
 	
 	int getX1();
 	int getY1();

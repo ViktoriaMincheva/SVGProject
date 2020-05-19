@@ -22,7 +22,7 @@ Shape* Circles::printCircle(char * line, int shapeNum)
 	token = strtok(line, "\"");
 
 	int val = 0;
-	int circleX, circleY, radius;
+	int circleX = 0, circleY = 0, radius = 0;
 	char* circleColor = new char[1];
 	while (token != NULL) {
 
@@ -61,7 +61,9 @@ void Circles::printToConsole()
 
 void Circles::printToFile(std::fstream& file)
 { //<circle cx="5" cy="5" r="10" fill="blue" />
-	file << "  <circle cx=\"" << centerX << "\" cy=\"" << centerY << "\" r=\"" << radius << "\" fill=\"" << color << "\" />";
+	file << "  <circle cx=\"" << centerX << "\" cy=\"" << centerY << "\" r=\"" << radius << "\" fill=\"";
+	Shape::printToFile(file);
+	file << "\" />";
 }
 
 Shape * Circles::createCircle(char * line)
@@ -71,10 +73,8 @@ Shape * Circles::createCircle(char * line)
 	
 	token = strtok(line, " ");
 	
-	int circleX, circleY, radius;
+	int circleX = 0, circleY = 0, radius = 0;
 	
-	//char* circleColor = new char[4];
-	//strcpy(circleColor, "red");
 	char* circleColor = new char[1];
 
 	while (token != NULL) {
