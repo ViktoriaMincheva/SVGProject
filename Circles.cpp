@@ -1,4 +1,5 @@
 #include "Circles.h"
+#include "Command.h"
 #include <fstream>
 #include <string.h>
 
@@ -70,7 +71,8 @@ Shape * Circles::createCircle(char * line)
 {
 	int val = 0;
 	char* token;
-	
+	bool hasOnlyDigits = true;
+
 	token = strtok(line, " ");
 	
 	int circleX = 0, circleY = 0, radius = 0;
@@ -83,8 +85,14 @@ Shape * Circles::createCircle(char * line)
 			val++;
 		} 
 		else if (val == 2) {
-			circleX = std::stoi(token);
-			val++;
+			//Command::checkIfHasOnlyDigits(token, &hasOnlyDigits);
+			//if (hasOnlyDigits == false) {
+
+			//}
+			//else {
+				circleX = std::stoi(token);
+				val++;
+			//}
 		}
 		else if (val == 3) {
 			circleY = std::stoi(token);
@@ -98,7 +106,7 @@ Shape * Circles::createCircle(char * line)
 			circleColor = new char[strlen(token) + 1];
 			strcpy(circleColor, token);
 			val++;
-		}
+		} 
 	
 		token = strtok(NULL, " ");
 	}

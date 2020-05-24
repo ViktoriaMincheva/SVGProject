@@ -6,7 +6,7 @@ Ellipses::Ellipses() : centerX(0), centerY(0), rx(0), ry(0)
 {
 }
 
-Ellipses::Ellipses(int centerX, int centerY, unsigned int rx, unsigned int ry, char * color)
+Ellipses::Ellipses(int centerX, int centerY, int rx, int ry, char * color)
 {
 	this->centerX = centerX;
 	this->centerY = centerY;

@@ -19,23 +19,23 @@ int main()
 		char* lineCop = new char[strlen(line) + 1];
 		strcpy(lineCop, line);
 		char* word = strtok(line, " ");
-		
+		bool hasOnlyDigits = true;
 		
 
 		if (word != NULL) {
-			if (strcmp(word, Command::OPEN) == 0) { 
+			if (strcmp(word, Command::OPEN) == 0) { // Œ 
 				char* fileName;
 				fileName = strtok(NULL, " ");
 				Command::openFile(file, fileName);
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::CLOSE) == 0) {
+			else if (strcmp(word, Command::CLOSE) == 0) { // Œ  
 				char* fileName;
 				fileName = strtok(NULL, " ");
 				Command::closeFile(file, fileName);
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::PRINT) == 0) {
+			else if (strcmp(word, Command::PRINT) == 0) { // Œ 
 
 				if (!file.is_open()) {
 					std::cerr << "This file is not opened yet!" << std::endl <<
@@ -61,7 +61,7 @@ int main()
 
 						continue;
 					}
-					//std::cout << line << std::endl;
+					
 					char* shapeName;
 					char* lineCopy = new char[strlen(line) + 1];
 					strcpy(lineCopy, line);
@@ -90,38 +90,40 @@ int main()
 
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::ERASE) == 0) {
+			else if (strcmp(word, Command::ERASE) == 0) { // OK
 				char* token;
 				token = strtok(NULL, " ");
-
 				int numOfShape;
+
+				if (Command::checkIfHasOnlyDigits(token) == false) {
+					std::cerr << "Invalid operation! Erase should be followed by a number!\n";
+				}
+				else {
 				numOfShape = std::stoi(token);
 				Command::eraseShape(file, numOfShape);
+			    }
 
 				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::TRANSLATE) == 0) {
 
-				std::cout << Command::TRANSLATE << std::endl;
 				Command::translate(file, lineCop);
 				std::cout << "\n";
-			}
-			else if (strcmp(word, Command::SAVE) == 0) { // da pitam
-				//char* fileName;
-				//fileName = strtok(NULL, " ");
-				//Command::save(file);
-
-			}
+			} 
 			else if (strcmp(word, "exit") == 0) { //done
 				file.close();
 				std::cout << "Exit!" << std::endl;
 				return 0;
 			}
-			else if (strcmp(word, Command::SAVEAS) == 0) {
+			else if (strcmp(word, Command::SAVE) == 0) {
 				// save as shape.svg
 				char* checkIfAs;
 				checkIfAs = strtok(NULL, " ");
-				if (strcmp(checkIfAs, "as")==0) {
+				
+				if (checkIfAs == NULL) {
+					Command::save(file);
+				}
+				else if (strcmp(checkIfAs, "as")==0) {
 					char* newName;
 					newName = strtok(NULL, " ");
 					Command::saveas(file, newName);
@@ -138,11 +140,7 @@ int main()
 			else {
 				std::cout << "Command not recognized! Try again!" << std::endl;
 			}
-
-
 		}
-
-
 	}
 
 	return 0;

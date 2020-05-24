@@ -17,7 +17,6 @@ public:
 	static const char* ERASE;
 	static const char* TRANSLATE;
 	static const char* SAVE;
-	static const char* SAVEAS;
 	static const char* HELP;
 	static const char* EXIT;
 
@@ -35,5 +34,6 @@ public:
 	static void checkHorizontal(char* word, int* horizontalTr, bool* ifshouldContinue);
 	static void translateOnlyOneShape(std::fstream& file, int shapeNum, int verticalTr, int horizontalTr);
 	static void translateAllShapes(std::fstream& file, int verticalTr, int horizontalTr);
+	static bool checkIfHasOnlyDigits(char* token);
 };
 

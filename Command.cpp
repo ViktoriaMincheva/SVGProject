@@ -15,8 +15,7 @@ const char* Command::CREATE = "create";
 const char* Command::WHITHIN = "whithin";
 const char* Command::ERASE = "erase";
 const char* Command::TRANSLATE = "translate";
-const char* Command::SAVE = "saveD"; // will change later
-const char* Command::SAVEAS = "save";
+const char* Command::SAVE = "save"; 
 const char* Command::HELP = "help";
 const char* Command::EXIT = "exit";
 
@@ -143,11 +142,30 @@ void Command::eraseShape(std::fstream& file, int numOfShape)
 		file.seekg(std::ios_base::beg);
 		file.unsetf(std::ios::skipws);
 		int currLine = 0;
+		int allLines = 0;
 
 		std::fstream temp;
 		temp.open("temp.svg", std::ios_base::out);
 
 		// проверка, ако не съществува такава фигура
+		while (file) {
+			file.getline(line, 100);
+			if (strcmp(line, "</svg>") == 0) {
+				allLines++;
+				break;
+			}
+			else {
+				allLines++;
+			}
+		}
+
+		if (allLines - 1 < numOfShape + 4) {
+			std::cout << "There is no figure number " << numOfShape << "!" << std::endl;
+			return;
+		}
+
+		file.seekg(std::ios_base::beg);
+		file.unsetf(std::ios::skipws);
 
 		while (file) {
 			file.getline(line, 100); //DOBAVQM TUUUK
@@ -358,21 +376,42 @@ void Command::saveas(std::fstream& file, char* newName)
 
 		while (file) {
 			file.getline(line, 100);
-			newFile << line << std::endl;
+			if (strcmp(line, "</svg>") == 0) {
+				newFile << line;
+				break;
+			}
+			else {
+				newFile << line << std::endl;
+			}
 		}
 
 		std::cout << "Successfully saved as " << newName << std::endl;
 		newFile.close();
-
-		
 	}
 }
 
 void Command::help()
 {
 	std::cout << "You can only use the following commands: " << std::endl 
-		      << "open <fileName> \t print \t create \t whithin \t erase <numOfShapeToErase>\t" << std::endl 
-		      << "translate \t save \t save as <newFileName> \t help \t exit \t" << std::endl;
+		      << "open <fileName>             | file opens\n" 
+		      << "print                       | prints all of the shapes from file\n"
+		      << "create  <shapeSpecifics>    | creates new shape\n" 
+		      << "\t - circle x y r color\n"
+		      << "\t - rectangle x y width height color\n"
+		      << "\t - ellipse cx cy rx ry color\n"
+		      << "\t - line x1 y1 x2 y2 color\n"
+		      << "\t - polyline x1 y1 x2 y2 ... color\n"
+		      << "\t - polugon x1 y1 x2 y2 ... color\n"
+		      << "whithin <shape>             | checks if there is a shape whithin this shape\n"
+		      << "erase <numOfShapeToErase>   | erases this shape\n"  
+		      << "translate                   | transaltes 1 shape or all shapes\n" 
+		      << "\t - translate only one shape:     translate <shapeNumber> vertical=<number> horizontal=<number> \n" 
+		      << "\t - translate all shapes:         translate vertical=<number> horizontal=<number> \n"
+		      << "save                        | saves the changes\n" 
+		      << "save as <newFileName>       | saves the file under a new name\n" 
+		      << "close <fileName>            | file closes\n"
+		      << "help                        | this information\n" 
+		      << "exit                        | exits the program\n";
 }
 
 void Command::checkVertical(char* word, int* verticalTr, bool* shouldContinue)
@@ -926,4 +965,16 @@ void Command::translateAllShapes(std::fstream& file, int verticalTr, int horizon
 	file.open("figures.svg", std::ios::in | std::ios::out);
 
 	std::cout << "Successfully translated all shapes " << std::endl;
+}
+
+bool Command::checkIfHasOnlyDigits(char* token)
+{
+	for (int i = 0; i < strlen(token); i++) {
+		if (!isdigit(token[i])) {
+			return false;
+		} else {
+			continue;
+		}
+	}
+	return true;
 }
