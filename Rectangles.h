@@ -1,5 +1,6 @@
 #pragma once
 #include "Shape.h"
+#include "Command.h"
 #include <iostream>
 #include <string>
 
@@ -15,10 +16,15 @@ public:
 	Rectangles();
 	Rectangles(int, int, int, int, char *);
 	
-	static Shape* printRectangle(char*, int);
+	static void rectangleTokenization(char*, int*, int*, int*, int*, char*&);
+	static Shape* printRectangle(char*);
 	virtual void printToConsole() override;
 	virtual void printToFile(std::fstream&) override;
 	static Shape* createRectangle(char*);
+	static void translateRectangle(std::fstream&, char*, int, int);
+	static void rectangleWithinCircle(char*, int, int, int, int*);
+	static void rectangleWithinRectangle(char*, int, int, int, int, int*);
+
 	int getX();
 	int getY();
 	int getWidth();

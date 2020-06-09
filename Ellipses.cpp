@@ -16,34 +16,31 @@ Ellipses::Ellipses(int centerX, int centerY, int rx, int ry, char * color)
 	strcpy(this->color, color);
 }
 
-Shape* Ellipses::printEllipse(char* line, int shapeNum)
+void Ellipses::ellipseTokenization(char* line, int* centerX, int* centerY, int* rx, int* ry, char*& color)
 {
 	char* token;
 	int toPrint = 0;
 	token = strtok(line, "\"");
 
 	int val = 0;
-	int centerX = 0, centerY = 0, rx = 0, ry = 0;
-	char* color = new char[1];
-
 	while (token != NULL) {
 
 		if (toPrint % 2 == 1) {
-			
+
 			if (val == 0) {
-				centerX = std::stoi(token);
+				*centerX = std::stoi(token);
 				val++;
 			}
 			else if (val == 1) {
-				centerY = std::stoi(token);
+				*centerY = std::stoi(token);
 				val++;
 			}
 			else if (val == 2) {
-				rx = std::stoi(token);
+				*rx = std::stoi(token);
 				val++;
 			}
 			else if (val == 3) {
-				ry = std::stoi(token);
+				*ry = std::stoi(token);
 				val++;
 			}
 			else if (val == 4) {
@@ -55,7 +52,13 @@ Shape* Ellipses::printEllipse(char* line, int shapeNum)
 		toPrint++;
 		token = strtok(NULL, "\"");
 	}
+}
 
+Shape* Ellipses::printEllipse(char* line)
+{
+	int centerX = 0, centerY = 0, rx = 0, ry = 0;
+	char* color = new char[1];
+	ellipseTokenization(line, &centerX, &centerY, &rx, &ry, color);
 
 	return new Ellipses(centerX, centerY, rx, ry, color);
 }
@@ -113,6 +116,127 @@ Shape* Ellipses::createEllipse(char* line)
 	}
 
 	return new Ellipses(cX, cY, rX, rY, ellipseColor);
+}
+
+void Ellipses::translateEllipse(std::fstream& temp, char* lineFromFile, int verticalTr, int horizontalTr)
+{
+	char* tok;
+	tok = strtok(lineFromFile, "\"");
+
+	int val = 0;
+	int toSkip = 0;
+	int centerX = 0, centerY = 0, rx = 0, ry = 0;
+	char* color = new char[1];
+
+	while (tok != NULL) {
+
+		if (toSkip % 2 == 1) {
+
+			if (val == 0) {
+				centerX = std::stoi(tok);
+				centerX += horizontalTr;
+				val++;
+			}
+			else if (val == 1) {
+				centerY = std::stoi(tok);
+				centerY += verticalTr;
+				val++;
+			}
+			else if (val == 2) {
+				rx = std::stoi(tok);
+				rx += horizontalTr;
+				val++;
+			}
+			else if (val == 3) {
+				ry = std::stoi(tok);
+				ry += verticalTr;
+				val++;
+			}
+			else if (val == 4) {
+				color = new char[strlen(tok) + 1];
+				strcpy(color, tok);
+				val++;
+			}
+		}
+		toSkip++;
+		tok = strtok(NULL, "\"");
+	}
+	temp << "  <ellipse cx=\"" << centerX << "\" cy=\"" << centerY << "\" rx=\"" << rx << "\" ry=\"" << ry << "\" fill=\"" << color << "\" />\n";
+}
+
+void Ellipses::ellipseWithinCircle(char* lineFromFile, int circleX, int circleY, int radius, int* shapesWithin)
+{
+	
+	int centerX = 0, centerY = 0, rx = 0, ry = 0;
+	char* color = new char[1];
+	ellipseTokenization(lineFromFile, &centerX, &centerY, &rx, &ry, color);
+	
+	int counter = 0;
+	int newX = 0, newY = 0;
+	bool isPointInside = true;
+
+	for (int i = 0; i < 2; i++) {
+
+		if (counter == 0) {
+			isPointInside = Command::isInsideCircle(circleX, circleY, radius, centerX - rx, centerY - ry);
+			counter++;
+		}
+		else if (counter == 1) {
+			isPointInside = Command::isInsideCircle(circleX, circleY, radius, centerX + rx, centerY + ry);
+			counter++;
+		}
+		if (isPointInside == false) {
+			break;
+		}
+	}
+
+	if (isPointInside == false) {
+		return;
+	}
+	else {
+		Shape* ellipse = new Ellipses(centerX, centerY, rx, ry, color);
+		std::cout << "-> ellipse ";
+		ellipse->printToConsole();
+		shapesWithin++;
+		std::cout << "\n";
+	}
+}
+
+void Ellipses::ellipseWithinRectangle(char* lineFromFile, int x1, int y1, int x2, int y2, int* shapesWithin)
+{
+	int centerX = 0, centerY = 0, rx = 0, ry = 0;
+	char* color = new char[1];
+	ellipseTokenization(lineFromFile, &centerX, &centerY, &rx, &ry, color);
+
+	int counter = 0;
+	int newX = 0, newY = 0;
+	bool isPointInside = true;
+
+	for (int i = 0; i < 2; i++) {
+
+		if (counter == 0) {
+			isPointInside = Command::isInsideRectangle(x1, y1, x2, y2, centerX - rx, centerY - ry);
+			counter++;
+		}
+		else if (counter == 1) {
+			isPointInside = Command::isInsideRectangle(x1, y1, x2, y2, centerX + rx, centerY + ry);
+			counter++;
+		}
+		if (isPointInside == false) {
+			break;
+		}
+	}
+
+	if (isPointInside == false) {
+		return;
+	}
+	else {
+		Shape* ellipse = new Ellipses(centerX, centerY, rx, ry, color);
+		std::cout << "-> ellipse ";
+		ellipse->printToConsole();
+		shapesWithin++;
+		std::cout << "\n";
+	}
 }
 
 int Ellipses::getX()

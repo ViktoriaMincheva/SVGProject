@@ -13,7 +13,7 @@ public:
 	static const char* CLOSE;
 	static const char* PRINT;
 	static const char* CREATE;
-	static const char* WHITHIN;
+	static const char* WITHIN;
 	static const char* ERASE;
 	static const char* TRANSLATE;
 	static const char* SAVE;
@@ -24,7 +24,7 @@ public:
 	static void closeFile(std::fstream& file,char* fileName);
 	//static void printInfo(std::fstream& file);
 	static void createNewShape(std::fstream& file, char * shapeName, char * line);
-	static void whithin(std::fstream& file);
+	static void within(std::fstream& file, char * line);
 	static void eraseShape(std::fstream& file, int numOfShape);
 	static void translate(std::fstream& file, char * line);
 	static void save(std::fstream& file);
@@ -34,6 +34,12 @@ public:
 	static void checkHorizontal(char* word, int* horizontalTr, bool* ifshouldContinue);
 	static void translateOnlyOneShape(std::fstream& file, int shapeNum, int verticalTr, int horizontalTr);
 	static void translateAllShapes(std::fstream& file, int verticalTr, int horizontalTr);
-	static bool checkIfHasOnlyDigits(char* token);
+	static bool checkIfHasOnlyDigits(char*);
+	static bool isInsideCircle(int, int, int, int, int);
+	static bool isInsideRectangle(int, int, int, int, int, int);
+	static void withinCircle(std::fstream&, char*);
+	static void withinRectangle(std::fstream&, char*);
+	static char** strSplit(char*, char, int*);
+
 };
 

@@ -12,7 +12,7 @@ const char* Command::OPEN = "open";
 const char* Command::CLOSE = "close";
 const char* Command::PRINT = "print";
 const char* Command::CREATE = "create";
-const char* Command::WHITHIN = "whithin";
+const char* Command::WITHIN = "within";
 const char* Command::ERASE = "erase";
 const char* Command::TRANSLATE = "translate";
 const char* Command::SAVE = "save"; 
@@ -27,8 +27,7 @@ void Command::openFile(std::fstream& file,char * fileName)
 
 	if (!file.is_open()) {
 
-		std::cerr << "Soryy, I couldn't open the file! Try again or type in: help!" << std::endl;
-		
+		std::cerr << "Soryy, I couldn't open the file! Try again or type in: help!";
 		
 	}
 	else {
@@ -70,10 +69,10 @@ void Command::createNewShape(std::fstream& file, char * shapeName, char * line)
 			shape = StraightLines::createLine(line);
 		}
 		else if (strcmp(shapeName, Shape::POLYLINE) == 0) {
-
+			shape = Polylines::createPolyline(line);
 		}
 		else if (strcmp(shapeName, Shape::POLYGON) == 0) {
-
+			shape = Polygons::createPolygon(line);
 		}
 		else {
 			std::cerr << "Invalid shape name!" << std::endl;
@@ -82,6 +81,9 @@ void Command::createNewShape(std::fstream& file, char * shapeName, char * line)
 			return;
 		}
 
+		if (shape == nullptr) {
+			return;
+		}
 
 		file.seekg(std::ios_base::beg);
 		file.unsetf(std::ios::skipws);
@@ -106,28 +108,58 @@ void Command::createNewShape(std::fstream& file, char * shapeName, char * line)
 			currLen++;
 	    }
 
-		shape->printToFile(temp); //
-		temp << "\n</svg>"; // реално функцията
+		shape->printToFile(temp); 
+		temp << "\n</svg>"; 
 		file.close();
 		temp.close();
 
 		remove("figures.svg");
-		rename("temp.svg", "figures.svg");
-		file.open("figures.svg", std::ios::in | std::ios::out);
+		if (rename("temp.svg", "figures.svg") != 0) {
+			std::cerr << "Copy fail!!" << std::endl;
+		}
+		else {
+			file.open("figures.svg", std::ios::in | std::ios::out);
 
-		std::cout << "Successfully created " << shapeName << std::endl;
+			std::cout << "Successfully created " << shapeName << std::endl;
+		}
 	}
 
-}
+} 
 
-void Command::whithin(std::fstream& file)
+void Command::within(std::fstream& file, char * line)
 {
 	if (!file.is_open()) {
 		std::cerr << "This file is not opened yet!" << std::endl <<
 			"If you want to use it, please open it first!" << std::endl;
 		std::cout << "\n";
 	}
-	else {}
+	else {
+		char* lineCopy = new char[strlen(line) + 1];
+		strcpy(lineCopy, line);
+
+
+		char* token;
+		token = strtok(line, " ");
+
+		while (token != NULL) {
+			if (strcmp(token, "within") == 0) {
+			}
+			else if (strcmp(token, "circle") == 0) {
+				Command::withinCircle(file, lineCopy);
+				break;
+			}
+			else if (strcmp(token, "rectangle") == 0) {
+				Command::withinRectangle(file, lineCopy);
+				break;
+			}
+			else {
+				std::cerr << "Invalid shape, I can only check within circle or rectangle!" << std::endl;
+				return;
+			}
+			token = strtok(NULL, " ");
+		}
+
+	}
 }
 
 void Command::eraseShape(std::fstream& file, int numOfShape)
@@ -147,7 +179,6 @@ void Command::eraseShape(std::fstream& file, int numOfShape)
 		std::fstream temp;
 		temp.open("temp.svg", std::ios_base::out);
 
-		// проверка, ако не съществува такава фигура
 		while (file) {
 			file.getline(line, 100);
 			if (strcmp(line, "</svg>") == 0) {
@@ -187,10 +218,14 @@ void Command::eraseShape(std::fstream& file, int numOfShape)
 		file.close();
 
 		remove("figures.svg");
-		rename("temp.svg", "figures.svg");
-		file.open("figures.svg", std::ios::in | std::ios::out);
+		if (rename("temp.svg", "figures.svg") != 0) {
+			std::cerr << "Copy fail!!" << std::endl;
+		}
+		else {
+			file.open("figures.svg", std::ios::in | std::ios::out);
 
-		std::cout << "Successfully erased shape " << numOfShape << std::endl;
+			std::cout << "Successfully erased shape " << numOfShape << std::endl;
+		}
 
 	}
 }
@@ -215,7 +250,6 @@ void Command::translate(std::fstream& file, char* line)
 
 
 		while (token != NULL) { //proverqva kolko tokena ima vyvedeni
-			//std::cout << token << "   " << tokenCount << std::endl;
 			tokenCount++;
 			token = strtok(NULL, " ");
 		}
@@ -245,27 +279,22 @@ void Command::translate(std::fstream& file, char* line)
 					count++;
 				}
 				else if (count == 1) {
-					//shouldContinue = true;
 					Command::checkVertical(word, &verticalTr, &shouldContinue);
 					if (shouldContinue == false) {
 						break;
 					}
-
 					count++;
 				}
 				else if (count == 2) {
-					//shouldContinue = true;
 					Command::checkHorizontal(word, &horizontalTr, &shouldContinue);
 					if (shouldContinue == false) {
 						break;
 					}
-
 					count++;
 				}
 				else if (count > 2) {
 					break;
 				}
-
 				word = strtok(NULL, " ");
 			}
 
@@ -274,7 +303,6 @@ void Command::translate(std::fstream& file, char* line)
 			}
 
 			Command::translateAllShapes(file, verticalTr, horizontalTr);
-
 		}
 		else if (tokenCount == 3) {
 			char* word;
@@ -293,7 +321,6 @@ void Command::translate(std::fstream& file, char* line)
 					int length;
 					length = strlen(word);
 					
-
 					for (int i = 0; i < length; i++) {
 						if (!isdigit(word[i])) {
 							hasOnlyDigits = false;
@@ -311,7 +338,6 @@ void Command::translate(std::fstream& file, char* line)
 					count++;
 				}
 				else if (count == 2) {
-					//shouldContinue = true;
 					Command::checkVertical(word, &verticalTr, &shouldContinue);
 					if (shouldContinue == false) {
 						break;
@@ -319,8 +345,6 @@ void Command::translate(std::fstream& file, char* line)
 					count++;
 				}
 				else if (count == 3) {
-					//shouldContinue = true;
-
 					Command::checkHorizontal(word, &horizontalTr, &shouldContinue);
 					if (shouldContinue == false) {
 						break;
@@ -338,13 +362,8 @@ void Command::translate(std::fstream& file, char* line)
 			if (shouldContinue == false) {
 				return;
 			}
-			//std::cout << "\n" << "emi ver e: " << verticalTr << "\n";
-			//std::cout << "\n" << "emi hor e: " << horizontalTr << "\n";
-			//std::cout << "\n" << "emi shape e: " << shapeNum << "\n";
-			//std::cout << "funkciika" << std::endl << std::endl;
 			Command::translateOnlyOneShape(file, shapeNum, verticalTr, horizontalTr);
 		}
-
 	}
 }
 
@@ -401,7 +420,7 @@ void Command::help()
 		      << "\t - ellipse cx cy rx ry color\n"
 		      << "\t - line x1 y1 x2 y2 color\n"
 		      << "\t - polyline x1 y1 x2 y2 ... color\n"
-		      << "\t - polugon x1 y1 x2 y2 ... color\n"
+		      << "\t - polygon x1 y1 x2 y2 ... color\n"
 		      << "whithin <shape>             | checks if there is a shape whithin this shape\n"
 		      << "erase <numOfShapeToErase>   | erases this shape\n"  
 		      << "translate                   | transaltes 1 shape or all shapes\n" 
@@ -422,7 +441,7 @@ void Command::checkVertical(char* word, int* verticalTr, bool* shouldContinue)
 	vertical = new char[strlen(word) + 1];
 	strcpy(vertical, word);
 
-	for (int i = 0; i < strlen(checkVertical); i++) { //този for само проверява дали първите 8(9) знака са същите като checkVertical
+	for (size_t i = 0; i < strlen(checkVertical); i++) { //този for само проверява дали първите 8(9) знака са същите като checkVertical
 		if (checkVertical[i] == vertical[i]) {
 			continue;
 		}
@@ -436,14 +455,14 @@ void Command::checkVertical(char* word, int* verticalTr, bool* shouldContinue)
 	num = new char[strlen(vertical) - 9]; // - 7 за да махна първите 8 char-a, но 1 за терминиращата нула
 	int k = 0; // брояч за num
 
-	for (int j = 9; j < strlen(vertical); j++) {
+	for (size_t j = 9; j < strlen(vertical); j++) {
 		num[k] = vertical[j];
 		k++;
 	}
 	num[k] = '\0';
 
 
-	for (int i = 0; i < strlen(num); i++) {
+	for (size_t i = 0; i < strlen(num); i++) {
 		if (num[0] == '-') {
 			continue;
 		}
@@ -473,7 +492,7 @@ void Command::checkHorizontal(char* word, int* horizontalTr, bool* shouldContinu
 	strcpy(horizontal, word);
 	bool isDigit = true;
 
-	for (int i = 0; i < strlen(checkHorizontal); i++) {
+	for (size_t i = 0; i < strlen(checkHorizontal); i++) {
 		if (checkHorizontal[i] == horizontal[i]) {
 			continue;
 		}
@@ -488,14 +507,14 @@ void Command::checkHorizontal(char* word, int* horizontalTr, bool* shouldContinu
 	char* num = new char[1];
 	num = new char[strlen(horizontal) - 10]; // - 9 за да махна първите 10 char-a, но -1 за терминиращата нула
 
-	for (int j = 11; j < strlen(horizontal); j++) {
+	for (size_t j = 11; j < strlen(horizontal); j++) {
 		num[k] = horizontal[j];
 		k++;
 	}
 	num[k] = '\0';
 
 
-	for (int i = 0; i < strlen(num); i++) {
+	for (size_t i = 0; i < strlen(num); i++) {
 		if (num[0] == '-') {
 			continue;
 		}
@@ -525,11 +544,9 @@ void Command::translateOnlyOneShape(std::fstream& file, int shapeNum, int vertic
 	std::fstream temp;
 	temp.open("temp.svg", std::ios_base::out);
 
-
 	while (file) {
 
-		file.getline(lineFromFile, 100); // първи ред от файла
-
+		file.getline(lineFromFile, 100); 
 
 		if (currLine != shapeNum + 3) {
 			if (strcmp(lineFromFile, "</svg>") == 0) {
@@ -546,201 +563,42 @@ void Command::translateOnlyOneShape(std::fstream& file, int shapeNum, int vertic
 
 			char* token = strtok(lineCopy, " ");
 
-			if (strcmp(token, "<circle") == 0) { // тук може това да е функция в circle
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int x = 0, y = 0, r = 0;
-				char* circleColor = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-
-							x = std::stoi(tok);
-							x += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							y = std::stoi(tok);
-							y += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							r = std::stoi(tok);
-							val++;
-						}
-						else if (val == 3) {
-							circleColor = new char[strlen(tok) + 1];
-							strcpy(circleColor, tok);
-							val++;
-						}
-					}
-					toSkip++;
-					tok = strtok(NULL, "\"");
-
-				}
-				temp << "  <circle cx=\"" << x << "\" cy=\"" << y << "\" r=\"" << r << "\" fill=\"" << circleColor << "\" />\n";
+			if (strcmp(token, "<circle") == 0) { 
+				Circles::translateCircle(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<rect") == 0) {
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int x = 0, y = 0, width = 0, height = 0;
-				char* color = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-							x = std::stoi(tok);
-							x += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							y = std::stoi(tok);
-							y += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							width = std::stoi(tok);
-							val++;
-						}
-						else if (val == 3) {
-							height = std::stoi(tok);
-							val++;
-						}
-						else if (val == 4) {
-							color = new char[strlen(tok) + 1];
-							strcpy(color, tok);
-							val++;
-						}
-
-					}
-
-					toSkip++;
-					tok = strtok(NULL, "\"");
-				}
-
-				temp << "  <rect x=\"" << x << "\" y=\"" << y << "\" width=\"" << width << "\" height=\"" << height << "\" fill=\"" << color << "\" />\n";
-
-
+				Rectangles::translateRectangle(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<ellipse") == 0) {
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int centerX = 0, centerY = 0, rx = 0, ry = 0;
-				char* color = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-							centerX = std::stoi(tok);
-							centerX += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							centerY = std::stoi(tok);
-							centerY += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							rx = std::stoi(tok);
-							rx += horizontalTr;
-							val++;
-						}
-						else if (val == 3) {
-							ry = std::stoi(tok);
-							ry += verticalTr;
-							val++;
-						}
-						else if (val == 4) {
-							color = new char[strlen(tok) + 1];
-							strcpy(color, tok);
-							val++;
-						}
-					}
-					toSkip++;
-					tok = strtok(NULL, "\"");
-				}
-				temp << "  <ellipse cx=\"" << centerX << "\" cy=\"" << centerY << "\" rx=\"" << rx << "\" ry=\"" << ry << "\" fill=\"" << color << "\" />\n";
+				Ellipses::translateEllipse(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<line") == 0) {
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-				char* color = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-							x1 = std::stoi(tok);
-							x1 += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							y1 = std::stoi(tok);
-							y1 += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							x2 = std::stoi(tok);
-							x2 += horizontalTr;
-							val++;
-						}
-						else if (val == 3) {
-							y2 = std::stoi(tok);
-							y2 += verticalTr;
-							val++;
-						}
-						else if (val == 4) {
-							color = new char[strlen(tok) + 1];
-							strcpy(color, tok);
-							val++;
-						}
-					}
-					toSkip++;
-					tok = strtok(NULL, "\"");
-				}
-				temp << "  <line x1=\"" << x1 << "\" y1=\"" << y1 << "\" x2=\"" << x2 << "\" y2=\"" << y2 << "\" fill=\"" << color << "\" />\n";
+				StraightLines::translateLine(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<polyline") == 0) {
-				std::cout << "polyline" << std::endl;
+				Polylines::translatePolyline(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<polygon") == 0) {
-				std::cout << "polygon" << std::endl;
+				Polygons::translatePolygon(temp, lineFromFile, verticalTr, horizontalTr);
 			}
-
 		}
 		currLine++;
 	}
-
 
 	temp.close();
 	file.close();
 
 	remove("figures.svg");
-	rename("temp.svg", "figures.svg");
-	file.open("figures.svg", std::ios::in | std::ios::out);
 
-	std::cout << "Successfully translated shape " << shapeNum << std::endl;
+	if (rename("temp.svg", "figures.svg") != 0) {
+		std::cerr << "Copy fail!!" << std::endl;
+	}
+	else {
+		file.open("figures.svg", std::ios::in | std::ios::out);
+
+		std::cout << "Successfully translated shape " << shapeNum << std::endl;
+	}
+
 }
 
 void Command::translateAllShapes(std::fstream& file, int verticalTr, int horizontalTr)
@@ -770,189 +628,24 @@ void Command::translateAllShapes(std::fstream& file, int verticalTr, int horizon
 
 			char* token = strtok(lineCopy, " ");
 
-			if (strcmp(token, "<circle") == 0) { // тук може това да е функция в circle
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int x = 0, y = 0, r = 0;
-				char* circleColor = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-
-							x = std::stoi(tok);
-							x += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							y = std::stoi(tok);
-							y += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							r = std::stoi(tok);
-							val++;
-						}
-						else if (val == 3) {
-							circleColor = new char[strlen(tok) + 1];
-							strcpy(circleColor, tok);
-							val++;
-						}
-					}
-					toSkip++;
-					tok = strtok(NULL, "\"");
-
-				}
-				temp << "  <circle cx=\"" << x << "\" cy=\"" << y << "\" r=\"" << r << "\" fill=\"" << circleColor << "\" />\n";
+			if (strcmp(token, "<circle") == 0) { 
+				Circles::translateCircle(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<rect") == 0) {
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int x = 0, y = 0, width = 0, height = 0;
-				char* color = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-							x = std::stoi(tok);
-							x += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							y = std::stoi(tok);
-							y += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							width = std::stoi(tok);
-							val++;
-						}
-						else if (val == 3) {
-							height = std::stoi(tok);
-							val++;
-						}
-						else if (val == 4) {
-							color = new char[strlen(tok) + 1];
-							strcpy(color, tok);
-							val++;
-						}
-
-					}
-
-					toSkip++;
-					tok = strtok(NULL, "\"");
-				}
-
-				temp << "  <rect x=\"" << x << "\" y=\"" << y << "\" width=\"" << width << "\" height=\"" << height << "\" fill=\"" << color << "\" />\n";
-
-
+				Rectangles::translateRectangle(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<ellipse") == 0) {
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int centerX = 0, centerY = 0, rx = 0, ry = 0;
-				char* color = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-							centerX = std::stoi(tok);
-							centerX += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							centerY = std::stoi(tok);
-							centerY += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							rx = std::stoi(tok);
-							rx += horizontalTr;
-							val++;
-						}
-						else if (val == 3) {
-							ry = std::stoi(tok);
-							ry += verticalTr;
-							val++;
-						}
-						else if (val == 4) {
-							color = new char[strlen(tok) + 1];
-							strcpy(color, tok);
-							val++;
-						}
-					}
-					toSkip++;
-					tok = strtok(NULL, "\"");
-				}
-				temp << "  <ellipse cx=\"" << centerX << "\" cy=\"" << centerY << "\" rx=\"" << rx << "\" ry=\"" << ry << "\" fill=\"" << color << "\" />\n";
+				Ellipses::translateEllipse(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<line") == 0) {
-				char* tok;
-				tok = strtok(lineFromFile, "\"");
-
-				int val = 0;
-				int toSkip = 0;
-				int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-				char* color = new char[1];
-
-				while (tok != NULL) {
-
-					if (toSkip % 2 == 1) {
-
-						if (val == 0) {
-							x1 = std::stoi(tok);
-							x1 += horizontalTr;
-							val++;
-						}
-						else if (val == 1) {
-							y1 = std::stoi(tok);
-							y1 += verticalTr;
-							val++;
-						}
-						else if (val == 2) {
-							x2 = std::stoi(tok);
-							x2 += horizontalTr;
-							val++;
-						}
-						else if (val == 3) {
-							y2 = std::stoi(tok);
-							y2 += verticalTr;
-							val++;
-						}
-						else if (val == 4) {
-							color = new char[strlen(tok) + 1];
-							strcpy(color, tok);
-							val++;
-						}
-					}
-					toSkip++;
-					tok = strtok(NULL, "\"");
-				}
-				temp << "  <line x1=\"" << x1 << "\" y1=\"" << y1 << "\" x2=\"" << x2 << "\" y2=\"" << y2 << "\" fill=\"" << color << "\" />\n";
+				StraightLines::translateLine(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<polyline") == 0) {
-				std::cout << "polyline" << std::endl;
+				Polylines::translatePolyline(temp, lineFromFile, verticalTr, horizontalTr);
 			}
 			else if (strcmp(token, "<polygon") == 0) {
-				std::cout << "polygon" << std::endl;
+				Polygons::translatePolygon(temp, lineFromFile, verticalTr, horizontalTr);
 			}
-
-
 		}
 		currLine++;
 	}
@@ -961,15 +654,20 @@ void Command::translateAllShapes(std::fstream& file, int verticalTr, int horizon
 	file.close();
 
 	remove("figures.svg");
-	rename("temp.svg", "figures.svg");
-	file.open("figures.svg", std::ios::in | std::ios::out);
 
-	std::cout << "Successfully translated all shapes " << std::endl;
+	if (rename("temp.svg", "figures.svg") != 0) {
+		std::cerr << "Copy fail!!" << std::endl;
+	}
+	else {
+		file.open("figures.svg", std::ios::in | std::ios::out);
+
+		std::cout << "Successfully translated all shapes " << std::endl;
+	}
 }
 
 bool Command::checkIfHasOnlyDigits(char* token)
 {
-	for (int i = 0; i < strlen(token); i++) {
+	for (size_t i = 0; i < strlen(token); i++) {
 		if (!isdigit(token[i])) {
 			return false;
 		} else {
@@ -977,4 +675,211 @@ bool Command::checkIfHasOnlyDigits(char* token)
 		}
 	}
 	return true;
+}
+
+bool Command::isInsideCircle(int circleX, int circleY, int radius, int x, int y)
+{
+	if ((x - circleX) * (x - circleX) + (y - circleY) * (y - circleY) <= radius * radius) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Command::isInsideRectangle(int x1, int y1, int x2, int y2, int x, int y)
+{
+	if (x > x1 && x < x2 && y > y1 && y < y2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void Command::withinCircle(std::fstream& file, char* line)
+{
+	char* lineCopy = new char[strlen(line) + 1];
+	strcpy(lineCopy, line); 
+
+	char* token;
+	token = strtok(line, " ");
+
+	int val = 0;
+	int circleX = 0, circleY = 0, radius = 0;
+
+	while (token != NULL) {
+		if (val < 2) {
+			val++;
+		}
+		else if (val == 2) {
+			circleX = std::stoi(token);
+			val++;
+		}
+		else if (val == 3) {
+			circleY = std::stoi(token);
+			val++;
+		}
+		else if (val == 4) {
+			radius = std::stoi(token);
+			val++;
+		}
+		token = strtok(NULL, " ");
+	}
+
+	char lineFromFile[100];
+	file.seekg(std::ios_base::beg);
+	file.unsetf(std::ios::skipws);
+	int currLine = 0;
+	int shapesWithin = 0;
+
+	while (file) {
+
+		file.getline(lineFromFile, 100);
+		if (currLine < 4) {
+		}
+		else if (strcmp(lineFromFile, "</svg>") == 0) {
+			break;
+		}
+		else {
+			char* lineCopy = new char[strlen(lineFromFile) + 1];
+			strcpy(lineCopy, lineFromFile);
+
+			char* token = strtok(lineCopy, " ");
+			
+			if (strcmp(token, "<circle") == 0) { 
+				Circles::circleWithinCircle(lineFromFile, circleX, circleY, radius, &shapesWithin);
+			}
+			else if (strcmp(token, "<rect") == 0) {
+				Rectangles::rectangleWithinCircle(lineFromFile, circleX, circleY, radius, &shapesWithin);
+			}
+			else if (strcmp(token, "<ellipse") == 0) {
+				Ellipses::ellipseWithinCircle(lineFromFile, circleX, circleY, radius, &shapesWithin);
+			}
+			else if (strcmp(token, "<line") == 0) {
+				StraightLines::lineWithinCircle(lineFromFile, circleX, circleY, radius, &shapesWithin);
+			}
+			else if (strcmp(token, "<polyline") == 0) {
+				Polylines::polylineWithinCircle(lineFromFile, circleX, circleY, radius, &shapesWithin);
+			}
+			else if (strcmp(token, "<polygon") == 0) {
+				Polygons::polygonWithinCircle(lineFromFile, circleX, circleY, radius, &shapesWithin);
+			}
+		}
+
+		currLine++;
+	}
+	if (shapesWithin == 0) {
+		std::cout << "No figures are located " << lineCopy << std::endl;
+	}
+}
+
+void Command::withinRectangle(std::fstream& file, char* line)
+{
+	char* lineCopy = new char[strlen(line) + 1];
+	strcpy(lineCopy, line);
+
+	char* token;
+	token = strtok(line, " ");
+
+	int val = 0;
+	int x = 0, y = 0, width = 0, height = 0;
+	
+	while (token != NULL) {
+		if (val < 2) {
+			val++;
+		}
+		else if (val == 2) {
+			x = std::stoi(token);
+			val++;
+		}
+		else if (val == 3) {
+			y = std::stoi(token);
+			val++;
+		}
+		else if (val == 4) {
+			width = std::stoi(token);
+			val++;
+		}
+		else if (val == 5) {
+			height = std::stoi(token);
+			val++;
+		}
+		token = strtok(NULL, " ");
+	}
+
+	char lineFromFile[100];
+	file.seekg(std::ios_base::beg);
+	file.unsetf(std::ios::skipws);
+	int currLine = 0;
+	int shapesWithin = 0;
+
+	while (file) {
+
+		file.getline(lineFromFile, 100);
+		if (currLine < 4) {
+		}
+		else if (strcmp(lineFromFile, "</svg>") == 0) {
+			break;
+		}
+		else {
+			char* lineCopy = new char[strlen(lineFromFile) + 1];
+			strcpy(lineCopy, lineFromFile);
+
+			char* token = strtok(lineCopy, " ");
+
+			if (strcmp(token, "<circle") == 0) {
+				Circles::circleWithinRectangle(lineFromFile, x, y, x+width, y+height, &shapesWithin);
+			}
+			else if (strcmp(token, "<rect") == 0) {
+				Rectangles::rectangleWithinRectangle(lineFromFile, x, y, x + width, y + height, &shapesWithin);
+			}
+			else if (strcmp(token, "<ellipse") == 0) {
+				Ellipses::ellipseWithinRectangle(lineFromFile, x, y, x + width, y + height, &shapesWithin);
+			}
+			else if (strcmp(token, "<line") == 0) {
+				StraightLines::lineWithinRectangle(lineFromFile, x, y, x + width, y + height, &shapesWithin);
+			}
+			else if (strcmp(token, "<polyline") == 0) {
+				Polylines::polylineWithinRectnagle(lineFromFile, x, y, x + width, y + height, &shapesWithin);
+			}
+			else if (strcmp(token, "<polygon") == 0) {
+				Polygons::polygonWithinRectangle(lineFromFile, x, y, x + width, y + height, &shapesWithin);
+			}
+		}
+
+		currLine++;
+	}
+	if (shapesWithin == 0) {
+		std::cout << "No figures are located " << lineCopy << std::endl;
+	}
+
+}
+
+char** Command::strSplit(char* word, char delimiter, int* size)
+{
+	int delimiters = 0;
+
+	for (size_t i = 0; i < strlen(word); i++) {
+		if (word[i] == delimiter) {
+			delimiters++;
+		}
+	}
+
+	*size = delimiters + 1;
+
+	char** result = new char* [delimiters];
+
+	char* token = strtok(word, &delimiter);
+
+	int i = 0;
+	while (token != NULL) {
+		result[i] = new char[strlen(token) + 1];
+		strcpy(result[i], token);
+		i++;
+
+		token = strtok(NULL, &delimiter);
+	}
+
+	return result;
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 class Point
 {
 private:
@@ -11,4 +12,8 @@ public:
 		this->y = y;
 	}
 
+
+
+	int getX();
+	int getY();
 };

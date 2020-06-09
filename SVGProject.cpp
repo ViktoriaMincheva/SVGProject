@@ -8,10 +8,8 @@
 
 int main()
 {
-
 	char line[MAX_LINE];
 	std::fstream file;
-
 
 	while (true) {
 		std::cin.getline(line, MAX_LINE);
@@ -20,14 +18,18 @@ int main()
 		strcpy(lineCop, line);
 		char* word = strtok(line, " ");
 		bool hasOnlyDigits = true;
-		
 
 		if (word != NULL) {
 			if (strcmp(word, Command::OPEN) == 0) { // Œ 
 				char* fileName;
 				fileName = strtok(NULL, " ");
-				Command::openFile(file, fileName);
-				std::cout << "\n";
+				if (fileName == nullptr) {
+					std::cerr << "Please give name to the file you want to open!\n\n";
+				}
+				else {
+					Command::openFile(file, fileName);
+					std::cout << "\n";
+				}
 			}
 			else if (strcmp(word, Command::CLOSE) == 0) { // Œ  
 				char* fileName;
@@ -84,10 +86,9 @@ int main()
 
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::WHITHIN) == 0) {
+			else if (strcmp(word, Command::WITHIN) == 0) {
 
-				std::cout << Command::WHITHIN << std::endl;
-
+				Command::within(file, lineCop);
 				std::cout << "\n";
 			}
 			else if (strcmp(word, Command::ERASE) == 0) { // OK
@@ -110,7 +111,7 @@ int main()
 				Command::translate(file, lineCop);
 				std::cout << "\n";
 			} 
-			else if (strcmp(word, "exit") == 0) { //done
+			else if (strcmp(word, Command::EXIT) == 0) { //done
 				file.close();
 				std::cout << "Exit!" << std::endl;
 				return 0;
