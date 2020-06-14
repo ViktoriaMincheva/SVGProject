@@ -197,7 +197,7 @@ void StraightLines::lineWithinCircle(char* lineFromFile, int circleX, int circle
 		Shape* line = new StraightLines(x1, y1, x2, y2, color);
 		std::cout << "-> line ";
 		line->printToConsole();
-		shapesWithin++;
+		(*shapesWithin)++;
 		std::cout << "\n";
 	}
 }

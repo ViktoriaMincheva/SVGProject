@@ -168,7 +168,7 @@ void Circles::circleWithinCircle(char* lineFromFile, int circleX, int circleY, i
 		Shape* circle = new Circles(x, y, r, circleColor);
 		std::cout << "-> circle ";
 		circle->printToConsole();
-		shapesWithin++;
+		(*shapesWithin)++;
 		std::cout << "\n";
 	}
 	else {

@@ -210,7 +210,7 @@ void Rectangles::rectangleWithinCircle(char* lineFromFile, int circleX, int circ
 		Shape* rectangle = new Rectangles(x, y, width, height, color);
 		std::cout << "-> rectangle ";
 		rectangle->printToConsole();
-		shapesWithin++;
+		(*shapesWithin)++;
 		std::cout << "\n";
 	}
 }

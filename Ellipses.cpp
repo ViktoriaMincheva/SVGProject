@@ -199,7 +199,7 @@ void Ellipses::ellipseWithinCircle(char* lineFromFile, int circleX, int circleY,
 		Shape* ellipse = new Ellipses(centerX, centerY, rx, ry, color);
 		std::cout << "-> ellipse ";
 		ellipse->printToConsole();
-		shapesWithin++;
+		(*shapesWithin)++;
 		std::cout << "\n";
 	}
 }

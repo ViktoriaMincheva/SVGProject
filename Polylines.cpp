@@ -261,7 +261,7 @@ void Polylines::polylineWithinCircle(char* lineFromFile, int circleX, int circle
 		}
 	}
 	polyline->setColor(color);
-    *shapesWithin += 1;
+	(*shapesWithin)++;
 	std::cout << "-> polyline ";
 	polyline->printToConsole();
 	

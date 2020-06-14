@@ -263,7 +263,7 @@ void Polygons::polygonWithinCircle(char* lineFromFile, int circleX, int circleY,
 	polygon->setColor(color);
 	std::cout << "-> polygon ";
 	polygon->printToConsole();
-	shapesWithin++;
+	(*shapesWithin)++;
 	std::cout << "\n";
 }
 
