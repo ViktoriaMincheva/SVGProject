@@ -1,11 +1,5 @@
 #pragma once
 #include <iostream>
-/*#include "Circles.h"
-#include "Rectangles.h"
-#include "Ellipses.h"
-#include "StraightLines.h"
-#include "Polylines.h"
-#include "Polygons.h"*/
 
 class Shape
 {
@@ -21,11 +15,17 @@ public:
 	static const char* POLYGON;
 
 public: 
+	Shape();
+	Shape(const char*);
+	Shape(const Shape&);
+	Shape operator=(const Shape&);
+	~Shape();
 
 	virtual void printToConsole();
 	virtual void printToFile(std::fstream& file);
 	static void printShape(char *, char *, int);
 	char* getColor();
+	void setColor(const char*);
 
 };
 

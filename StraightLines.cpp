@@ -4,6 +4,8 @@
 
 StraightLines::StraightLines() : x1(0), y1(0), x2(0), y2(0)
 {
+	color = new char[1];
+	strcpy(color, "");
 }
 
 StraightLines::StraightLines(int x1, int y1, int x2, int y2, char * color)

@@ -3,10 +3,10 @@
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg> 
   <rect x="5" y="5" width="10" height="10" fill="green" />
-  <circle cx="15" cy="20" r="10" fill="pink" />
-  <line x1="11" y1="13" x2="14" y2="15" fill="orange" />
-  <ellipse cx="-3" cy="-4" rx="10" ry="15" fill="cyan" />
-  <polyline points="1,2 3,4 5,6" stroke="blue" />
-  <polygon points="12,13 14,15 16,17 18,19" fill="yellow" />
-  <polyline points="2,8 10,6 3,1" stroke="red" />
+  <circle cx="5" cy="5" r="10" fill="blue" />
+  <rect x="100" y="60" width="10" height="10" fill="red" />
+  <polygon points="12,13 14,15 16,17" fill="yellow" />
+  <line x1="1" y1="-1" x2="2" y2="-2" fill="pink" />
+  <ellipse cx="3" cy="6" rx="9" ry="12" fill="white" />
+  <polyline points="12,13 14,15 16,17" stroke="purple" />
 </svg>

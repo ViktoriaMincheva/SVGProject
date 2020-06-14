@@ -4,6 +4,8 @@
 
 Rectangles::Rectangles() : x(0), y(0), width (0), height(0)
 {
+	color = new char[1];
+	strcpy(color, "");
 }
 
 Rectangles::Rectangles(int x, int y, int width, int height, char* color)

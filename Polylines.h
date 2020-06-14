@@ -18,7 +18,6 @@ public:
 
 	void add(Point*);
 	static Shape* createPolyline(char*);
-	//static char** strSplit(char*, char, int*);
 	static Shape* printPolyline(char*);
 	virtual void printToConsole() override;
 	virtual void printToFile(std::fstream&) override;

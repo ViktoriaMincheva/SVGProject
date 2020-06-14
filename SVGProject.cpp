@@ -20,7 +20,7 @@ int main()
 		bool hasOnlyDigits = true;
 
 		if (word != NULL) {
-			if (strcmp(word, Command::OPEN) == 0) { // Œ 
+			if (strcmp(word, Command::OPEN) == 0) { 
 				char* fileName;
 				fileName = strtok(NULL, " ");
 				if (fileName == nullptr) {
@@ -31,13 +31,13 @@ int main()
 					std::cout << "\n";
 				}
 			}
-			else if (strcmp(word, Command::CLOSE) == 0) { // Œ  
+			else if (strcmp(word, Command::CLOSE) == 0) { 
 				char* fileName;
 				fileName = strtok(NULL, " ");
 				Command::closeFile(file, fileName);
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::PRINT) == 0) { // Œ 
+			else if (strcmp(word, Command::PRINT) == 0) { 
 
 				if (!file.is_open()) {
 					std::cerr << "This file is not opened yet!" << std::endl <<
@@ -91,7 +91,7 @@ int main()
 				Command::within(file, lineCop);
 				std::cout << "\n";
 			}
-			else if (strcmp(word, Command::ERASE) == 0) { // OK
+			else if (strcmp(word, Command::ERASE) == 0) { 
 				char* token;
 				token = strtok(NULL, " ");
 				int numOfShape;
@@ -111,7 +111,7 @@ int main()
 				Command::translate(file, lineCop);
 				std::cout << "\n";
 			} 
-			else if (strcmp(word, Command::EXIT) == 0) { //done
+			else if (strcmp(word, Command::EXIT) == 0) {
 				file.close();
 				std::cout << "Exit!" << std::endl;
 				return 0;

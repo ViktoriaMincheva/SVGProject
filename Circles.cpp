@@ -5,6 +5,8 @@
 
 Circles::Circles() : centerX(0), centerY(0), radius(0)
 {
+	color = new char[1];
+	strcpy(color, "");
 }
 
 Circles::Circles(int centerX, int centerY, int radius, char * color)

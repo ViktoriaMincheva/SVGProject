@@ -199,7 +199,7 @@ void Command::eraseShape(std::fstream& file, int numOfShape)
 		file.unsetf(std::ios::skipws);
 
 		while (file) {
-			file.getline(line, 100); //DOBAVQM TUUUK
+			file.getline(line, 100); 
 			if (currLine != numOfShape + 3) {
 				if (strcmp(line, "</svg>") == 0) {
 					temp << line;
@@ -540,6 +540,26 @@ void Command::translateOnlyOneShape(std::fstream& file, int shapeNum, int vertic
 	file.seekg(std::ios_base::beg);
 	file.unsetf(std::ios::skipws);
 	int currLine = 0;
+	int allLines = 0;
+
+	while (file) {
+		file.getline(lineFromFile, 100);
+		if (strcmp(lineFromFile, "</svg>") == 0) {
+			allLines++;
+			break;
+		}
+		else {
+			allLines++;
+		}
+	}
+
+	if (allLines - 1 < shapeNum + 4) {
+		std::cout << "There is no figure number " << shapeNum << "!" << std::endl;
+		return;
+	}
+	file.clear();
+	file.seekg(0,std::ios_base::beg);
+	file.unsetf(std::ios::skipws);
 
 	std::fstream temp;
 	temp.open("temp.svg", std::ios_base::out);

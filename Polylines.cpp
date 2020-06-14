@@ -35,8 +35,6 @@ void Polylines::add(Point* point)
 
 Shape* Polylines::createPolyline(char* line)
 {
-	// create polyline 1 2 1 2 1 2 1 2 blue
-	//1 2 3 4 5 6 blue
 	int j = strlen(line);
 	int lenght = j - 16;
 	char* lineCopy = new char [lenght];
@@ -96,32 +94,6 @@ Shape* Polylines::createPolyline(char* line)
 
 	return polyline;
 }
-/*char** Polylines::strSplit(char* word, char delimiter, int* size) {
-	int delimiters = 0;
-
-	for (int i = 0; i < strlen(word); i++) {
-		if (word[i] == delimiter) {
-			delimiters++;
-		}
-	}
-
-	*size = delimiters + 1;
-
-	char** result = new char* [delimiters];
-
-	char* token = strtok(word, &delimiter);
-
-	int i = 0;
-	while (token != NULL) {
-		result[i] = new char[strlen(token) + 1];
-		strcpy(result[i], token);
-		i++;
-
-		token = strtok(NULL, &delimiter);
-	}
-
-	return result;
-}*/
 
 Shape* Polylines::printPolyline(char* line)
 {

@@ -14,6 +14,40 @@ const char* Shape::LINE = "line";
 const char* Shape::POLYLINE = "polyline";
 const char* Shape::POLYGON = "polygon";
 
+Shape::Shape()
+{
+	setColor("");
+}
+
+Shape::Shape(const char* color)
+{
+	setColor(color);
+}
+
+Shape::Shape(const Shape& other)
+{
+	if (this != &other)
+	{
+		setColor(other.color);
+	}
+}
+
+Shape Shape::operator=(const Shape& other)
+{
+	if (this != &other)
+	{
+		delete[] color;
+		setColor(other.color);
+	}
+
+	return *this;
+}
+
+Shape::~Shape()
+{
+	delete[] color;
+}
+
 void Shape::printToConsole()
 {
 	std::cout << color;
@@ -78,4 +112,10 @@ void Shape::printShape(char* line, char* shapeName, int numOfShapes)
 char * Shape::getColor()
 {
 	return color;
+}
+
+void Shape::setColor(const char* color)
+{
+	this->color = new char[strlen(color) + 1];
+	strcpy(this->color, color);
 }
